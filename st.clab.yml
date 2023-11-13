@@ -27,7 +27,7 @@ topology:
       group: router
       # startup-config: configs/routers/clab-sjc-ebr1.cfg
       mgmt-ipv4: 172.80.80.11
-    clab-sjc-ebr1:
+    clab-sjc-ebr2:
       kind: nokia_srlinux
       type: ixrd3l
       group: router
@@ -38,7 +38,7 @@ topology:
       group: router
       # startup-config: configs/routers/clab-chi-ebr1.cfg
       mgmt-ipv4: 172.80.80.13
-    clab-chi-ebr1:
+    clab-chi-ebr2:
       kind: vr-juniper_vmx
       group: router
       # startup-config: configs/routers/clab-chi-ebr2.cfg
@@ -48,7 +48,7 @@ topology:
       group: router
       # startup-config: configs/routers/clab-nyc-ebr1.cfg
       mgmt-ipv4: 172.80.80.15
-    clab-nyc-ebr1:
+    clab-nyc-ebr2:
       kind: vr-nokia_sros
       group: router
       # startup-config: configs/routers/clab-nyc-ebr2.cfg
