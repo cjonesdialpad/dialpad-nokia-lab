@@ -1,160 +1,301 @@
-# Copyright 2020 Nokia
-# Licensed under the BSD 3-Clause License.
-# SPDX-License-Identifier: BSD-3-Clause
-
-name: st # short for streaming telemetry ;)
+name: dp
 prefix: ""
 
 mgmt:
-  network: st
+  network: dp8080
   ipv4-subnet: 172.80.80.0/24
 
 topology:
-  defaults:
-    kind: nokia_srlinux
 
   kinds:
     nokia_srlinux:
       image: ghcr.io/nokia/srlinux:23.7.2
-      type: ixrd2l
+    vr-nokia_sros:
+      image: vrnetlab/vr-sros:23.7.R2
+      type: "cp: uuid=5e71b654-1430-4c0e-a7fe-7752466a7a30 cpu=4 ram=5 slot=A chassis=SR-1 card=cpm-1 slot=1 mda/1=me12-100gb-qsfp28"
+      license: /root/SR_OS_VSR_license.txt
+    vr-juniper_vmx:
+      image: vrnetlab/vr-vmx:21.4R3.15
     linux:
       image: ghcr.io/hellt/network-multitool
 
   nodes:
-    ### SPINES ###
-    spine1:
+    ### ROUTERS ###
+    clab-sjc-ebr1:
+      kind: nokia_srlinux
       type: ixrd3l
-      group: spine
-      startup-config: configs/fabric/spine1.cfg
-      mgmt-ipv4: 172.80.80.21
-    spine2:
-      type: ixrd3l
-      group: spine
-      startup-config: configs/fabric/spine2.cfg
-      mgmt-ipv4: 172.80.80.22
-
-    ### LEAFS ###
-    leaf1:
-      startup-config: configs/fabric/leaf1.cfg
+      group: router
+      # startup-config: configs/routers/clab-sjc-ebr1.cfg
       mgmt-ipv4: 172.80.80.11
-      group: leaf
-    leaf2:
-      startup-config: configs/fabric/leaf2.cfg
+    clab-sjc-ebr1:
+      kind: nokia_srlinux
+      type: ixrd3l
+      group: router
+      # startup-config: configs/routers/clab-sjc-ebr2.cfg
       mgmt-ipv4: 172.80.80.12
-      group: leaf
-    leaf3:
-      startup-config: configs/fabric/leaf3.cfg
+    clab-chi-ebr1:
+      kind: vr-juniper_vmx
+      group: router
+      # startup-config: configs/routers/clab-chi-ebr1.cfg
       mgmt-ipv4: 172.80.80.13
-      group: leaf
+    clab-chi-ebr1:
+      kind: vr-juniper_vmx
+      group: router
+      # startup-config: configs/routers/clab-chi-ebr2.cfg
+      mgmt-ipv4: 172.80.80.14
+    clab-nyc-ebr1:
+      kind: vr-nokia_sros
+      group: router
+      # startup-config: configs/routers/clab-nyc-ebr1.cfg
+      mgmt-ipv4: 172.80.80.15
+    clab-nyc-ebr1:
+      kind: vr-nokia_sros
+      group: router
+      # startup-config: configs/routers/clab-nyc-ebr2.cfg
+      mgmt-ipv4: 172.80.80.16
 
-    ### CLIENTS ###
-    client1:
+
+    ### SWITCHES ###
+    clab-sjc-asw1:
+      kind: nokia_srlinux
+      type: ixrd2l
+      # startup-config: configs/switches/clab-sjc-asw1.cfg
+      mgmt-ipv4: 172.80.80.21
+      group: switch
+    clab-sjc-asw2:
+      kind: nokia_srlinux
+      type: ixrd2l
+      # startup-config: configs/switches/clab-sjc-asw2.cfg
+      mgmt-ipv4: 172.80.80.22
+      group: switch
+    clab-chi-asw1:
+      kind: nokia_srlinux
+      type: ixrd2l
+      # startup-config: configs/switches/clab-chi-asw1.cfg
+      mgmt-ipv4: 172.80.80.23
+      group: switch
+    clab-chi-asw2:
+      kind: nokia_srlinux
+      type: ixrd2l
+      # startup-config: configs/switches/clab-chi-asw2.cfg
+      mgmt-ipv4: 172.80.80.24
+      group: switch
+    clab-nyc-asw1:
+      kind: nokia_srlinux
+      type: ixrd2l
+      # startup-config: configs/switches/clab-nyc-asw1.cfg
+      mgmt-ipv4: 172.80.80.25
+      group: switch
+    clab-nyc-asw2:
+      kind: nokia_srlinux
+      type: ixrd2l
+      # startup-config: configs/switches/clab-nyc-asw2.cfg
+      mgmt-ipv4: 172.80.80.26
+      group: switch
+
+
+    ### SJC CLIENTS ###
+    clab-sjc-client1:
       kind: linux
       mgmt-ipv4: 172.80.80.31
       exec:
-        - ip address add 172.17.0.1/24 dev eth1
-        - ip -6 address add 2002::172:17:0:1/96 dev eth1
-        - iperf3 -s -p 5201 -D > iperf3_1.log
-        - iperf3 -s -p 5202 -D > iperf3_2.log
+        - ip address add 172.16.80.2/27 dev eth1
+        - ip route add default via 172.16.80.1
+        - ip -6 address add 2001:db8:8000::2/64 dev eth1
+        - ip -6 route add default via 2001:db8:8000::1 dev eth1
       group: server
-    client2:
+    clab-sjc-client2:
       kind: linux
       mgmt-ipv4: 172.80.80.32
-      binds:
-        - configs/client2:/config
       exec:
-        - ip address add 172.17.0.2/24 dev eth1
-        - ip -6 address add 2002::172:17:0:2/96 dev eth1
+        - ip address add 172.16.80.3/27 dev eth1
+        - ip route add default via 172.16.80.1
+        - ip -6 address add 2001:db8:8000::3/64 dev eth1
+        - ip -6 route add default via 2001:db8:8000::1 dev eth1
       group: server
-    client3:
+    clab-sjc-client3:
       kind: linux
       mgmt-ipv4: 172.80.80.33
-      binds:
-        - configs/client3:/config
       exec:
-        - ip address add 172.17.0.3/24 dev eth1
-        - ip -6 address add 2002::172:17:0:3/96 dev eth1
+        - ip address add 172.16.80.34/27 dev eth1
+        - ip route add default via 172.16.80.33
+        - ip -6 address add 2001:db8:8032::2/64 dev eth1
+        - ip -6 route add default via 2001:db8:8032::1 dev eth1
       group: server
 
-    ### TELEMETRY STACK ###
-    gnmic:
-      kind: linux
-      mgmt-ipv4: 172.80.80.41
-      image: ghcr.io/openconfig/gnmic:0.33.0
-      binds:
-        - gnmic-config.yml:/gnmic-config.yml:ro
-      cmd: --config /gnmic-config.yml --log subscribe
-      group: "10" # group 10 is assigned to the nodes of a telemetry stack
 
-    prometheus:
+    ### CHI CLIENTS ###
+    clab-chi-client1:
       kind: linux
-      mgmt-ipv4: 172.80.80.42
-      image: prom/prometheus:v2.47.2
-      binds:
-        - configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      cmd: --config.file=/etc/prometheus/prometheus.yml
-      ports:
-        - 9090:9090
-      group: "10"
+      mgmt-ipv4: 172.80.80.34
+      exec:
+        - ip address add 172.16.84.2/27 dev eth1
+        - ip route add default via 172.16.84.1
+        - ip -6 address add 2001:db8:8400::2/64 dev eth1
+        - ip -6 route add default via 2001:db8:8400::1 dev eth1
+      group: server
+    clab-chi-client2:
+      kind: linux
+      mgmt-ipv4: 172.80.80.35
+      exec:
+        - ip address add 172.16.84.3/27 dev eth1
+        - ip route add default via 172.16.84.1
+        - ip -6 address add 2001:db8:8400::3/64 dev eth1
+        - ip -6 route add default via 2001:db8:8400::1 dev eth1
+      group: server
+    clab-chi-client3:
+      kind: linux
+      mgmt-ipv4: 172.80.80.36
+      exec:
+        - ip address add 172.16.84.34/27 dev eth1
+        - ip route add default via 172.16.84.33
+        - ip -6 address add 2001:db8:8432::2/64 dev eth1
+        - ip -6 route add default via 2001:db8:8432::1 dev eth1
+      group: server
 
-    grafana:
-      kind: linux
-      mgmt-ipv4: 172.80.80.43
-      image: grafana/grafana:10.1.5
-      binds:
-        - configs/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
-        - configs/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
-        - configs/grafana/dashboards:/var/lib/grafana/dashboards
-      ports:
-        - 3000:3000
-      env:
-        GF_INSTALL_PLUGINS: https://algenty.github.io/flowcharting-repository/archives/agenty-flowcharting-panel-1.0.0d.220606199-SNAPSHOT.zip;agenty-flowcharting-panel
-        # env vars to enable anonymous access
-        GF_ORG_ROLE: "Admin"
-        GF_ORG_NAME: "Main Org"
-        GF_AUTH_ANONYMOUS_ENABLED: "true"
-        GF_AUTH_ANONYMOUS: "true"
-      group: "10"
 
-    ### LOGGING STACK ###
-    syslog:
+    ### NYC CLIENTS ###
+    clab-nyc-client1:
       kind: linux
-      mgmt-ipv4: 172.80.80.44
-      image: linuxserver/syslog-ng:4.1.1
-      binds:
-        - configs/syslog/:/config
-        - configs/syslog/log:/var/log
-      env:
-        PUID: 0
-        PGID: 0
+      mgmt-ipv4: 172.80.80.37
+      exec:
+        - ip address add 172.16.86.2/27 dev eth1
+        - ip route add default via 172.16.86.1
+        - ip -6 address add 2001:db8:8600::2/64 dev eth1
+        - ip -6 route add default via 2001:db8:8600::1 dev eth1
+      group: server
+    clab-nyc-client2:
+      kind: linux
+      mgmt-ipv4: 172.80.80.38
+      exec:
+        - ip address add 172.16.86.2/27 dev eth1
+        - ip route add default via 172.16.86.1
+        - ip -6 address add 2001:db8:8600::3/64 dev eth1
+        - ip -6 route add default via 2001:db8:8600::1 dev eth1
+      group: server
+    clab-nyc-client3:
+      kind: linux
+      mgmt-ipv4: 172.80.80.39
+      exec:
+        - ip address add 172.16.86.34/27 dev eth1
+        - ip route add default via 172.16.86.33
+        - ip -6 address add 2001:db8:8632::2/64 dev eth1
+        - ip -6 route add default via 2001:db8:8632::1 dev eth1
+      group: server
 
-    promtail:
-      kind: linux
-      mgmt-ipv4: 172.80.80.45
-      image: grafana/promtail:2.9.2
-      binds:
-        - configs/promtail:/etc/promtail
-      cmd: --config.file=/etc/promtail/promtail-config.yml
-      ports:
-        - 9080:9080
 
-    loki:
-      kind: linux
-      mgmt-ipv4: 172.80.80.46
-      image: grafana/loki:2.9.2
-      binds:
-        - configs/loki:/etc/loki
-      cmd: --config.file=/etc/loki/loki-config.yml
-      ports:
-        - 3100:3100
+    # ### TELEMETRY STACK ###
+    # gnmic:
+    #   kind: linux
+    #   mgmt-ipv4: 172.80.80.41
+    #   image: ghcr.io/openconfig/gnmic:0.33.0
+    #   binds:
+    #     - gnmic-config.yml:/gnmic-config.yml:ro
+    #   cmd: --config /gnmic-config.yml --log subscribe
+    #   group: "10" # group 10 is assigned to the nodes of a telemetry stack
+
+    # prometheus:
+    #   kind: linux
+    #   mgmt-ipv4: 172.80.80.42
+    #   image: prom/prometheus:v2.47.2
+    #   binds:
+    #     - configs/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    #   cmd: --config.file=/etc/prometheus/prometheus.yml
+    #   ports:
+    #     - 9090:9090
+    #   group: "10"
+
+    # grafana:
+    #   kind: linux
+    #   mgmt-ipv4: 172.80.80.43
+    #   image: grafana/grafana:10.1.5
+    #   binds:
+    #     - configs/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+    #     - configs/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+    #     - configs/grafana/dashboards:/var/lib/grafana/dashboards
+    #   ports:
+    #     - 3000:3000
+    #   env:
+    #     GF_INSTALL_PLUGINS: https://algenty.github.io/flowcharting-repository/archives/agenty-flowcharting-panel-1.0.0d.220606199-SNAPSHOT.zip;agenty-flowcharting-panel
+    #     # env vars to enable anonymous access
+    #     GF_ORG_ROLE: "Admin"
+    #     GF_ORG_NAME: "Main Org"
+    #     GF_AUTH_ANONYMOUS_ENABLED: "true"
+    #     GF_AUTH_ANONYMOUS: "true"
+    #   group: "10"
+
+    # ### LOGGING STACK ###
+    # syslog:
+    #   kind: linux
+    #   mgmt-ipv4: 172.80.80.44
+    #   image: linuxserver/syslog-ng:4.1.1
+    #   binds:
+    #     - configs/syslog/:/config
+    #     - configs/syslog/log:/var/log
+    #   env:
+    #     PUID: 0
+    #     PGID: 0
+
+    # promtail:
+    #   kind: linux
+    #   mgmt-ipv4: 172.80.80.45
+    #   image: grafana/promtail:2.9.2
+    #   binds:
+    #     - configs/promtail:/etc/promtail
+    #   cmd: --config.file=/etc/promtail/promtail-config.yml
+    #   ports:
+    #     - 9080:9080
+
+    # loki:
+    #   kind: linux
+    #   mgmt-ipv4: 172.80.80.46
+    #   image: grafana/loki:2.9.2
+    #   binds:
+    #     - configs/loki:/etc/loki
+    #   cmd: --config.file=/etc/loki/loki-config.yml
+    #   ports:
+    #     - 3100:3100
 
   links:
-    - endpoints: ["spine1:e1-1", "leaf1:e1-49"]
-    - endpoints: ["spine1:e1-2", "leaf2:e1-49"]
-    - endpoints: ["spine1:e1-3", "leaf3:e1-49"]
-    - endpoints: ["spine2:e1-1", "leaf1:e1-50"]
-    - endpoints: ["spine2:e1-2", "leaf2:e1-50"]
-    - endpoints: ["spine2:e1-3", "leaf3:e1-50"]
-    - endpoints: ["leaf1:e1-1", "client1:eth1"]
-    - endpoints: ["leaf2:e1-1", "client2:eth1"]
-    - endpoints: ["leaf3:e1-1", "client3:eth1"]
+    ### INTER-ROUTER ###
+    - endpoints: ["clab-sjc-ebr1:e1-1", "clab-sjc-ebr2:e1-1"]
+    - endpoints: ["clab-chi-ebr1:eth1", "clab-chi-ebr2:eth1"]
+    - endpoints: ["clab-nyc-ebr1:eth1", "clab-nyc-ebr2:eth1"]
+
+    ### WAN LINKS ###
+    - endpoints: ["clab-sjc-ebr1:e1-4", "clab-nyc-ebr2:eth4"]
+    - endpoints: ["clab-sjc-ebr2:e1-4", "clab-chi-ebr1:eth4"]
+    - endpoints: ["clab-chi-ebr2:eth4", "clab-nyc-ebr1:eth4"]
+
+    ### SJC ROUTER TO SWITCH ###
+    - endpoints: ["clab-sjc-ebr1:e1-2", "clab-sjc-asw1:e1-2"]
+    - endpoints: ["clab-sjc-ebr1:e1-3", "clab-sjc-asw2:e1-3"]
+    - endpoints: ["clab-sjc-ebr2:e1-2", "clab-sjc-asw2:e1-2"]
+    - endpoints: ["clab-sjc-ebr2:e1-3", "clab-sjc-asw1:e1-3"]
+
+    ### CHI ROUTER TO SWITCH ###
+    - endpoints: ["clab-chi-ebr1:eth2", "clab-chi-asw1:e1-2"]
+    - endpoints: ["clab-chi-ebr1:eth3", "clab-chi-asw2:e1-3"]
+    - endpoints: ["clab-chi-ebr2:eth2", "clab-chi-asw2:e1-2"]
+    - endpoints: ["clab-chi-ebr2:eth3", "clab-chi-asw1:e1-3"]
+
+    ### NYC ROUTER TO SWITCH ###
+    - endpoints: ["clab-nyc-ebr1:eth2", "clab-nyc-asw1:e1-2"]
+    - endpoints: ["clab-nyc-ebr1:eth3", "clab-nyc-asw2:e1-3"]
+    - endpoints: ["clab-nyc-ebr2:eth2", "clab-nyc-asw2:e1-2"]
+    - endpoints: ["clab-nyc-ebr2:eth3", "clab-nyc-asw1:e1-3"]
+
+    ### SJC CLIENTS ###
+    - endpoints: ["clab-sjc-client1:eth1", "clab-sjc-asw1:e1-4"]
+    - endpoints: ["clab-sjc-client2:eth1", "clab-sjc-asw1:e1-5"]
+    - endpoints: ["clab-sjc-client3:eth1", "clab-sjc-asw2:e1-4"]
+
+    ### CHI CLIENTS ###
+    - endpoints: ["clab-chi-client1:eth1", "clab-chi-asw1:e1-4"]
+    - endpoints: ["clab-chi-client2:eth1", "clab-chi-asw1:e1-5"]
+    - endpoints: ["clab-chi-client3:eth1", "clab-chi-asw2:e1-4"]
+
+    ### NYC CLIENTS ###
+    - endpoints: ["clab-nyc-client1:eth1", "clab-nyc-asw1:e1-4"]
+    - endpoints: ["clab-nyc-client2:eth1", "clab-nyc-asw1:e1-5"]
+    - endpoints: ["clab-nyc-client3:eth1", "clab-nyc-asw2:e1-4"]
