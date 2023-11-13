@@ -100,7 +100,7 @@ topology:
       mgmt-ipv4: 172.80.80.31
       exec:
         - ip address add 172.16.80.2/27 dev eth1
-        - ip route add default via 172.16.80.1
+        - ip route add 172.16.0.0/16 via 172.16.80.1
         - ip -6 address add 2001:db8:8000::2/64 dev eth1
         - ip -6 route add default via 2001:db8:8000::1 dev eth1
       group: server
@@ -109,7 +109,7 @@ topology:
       mgmt-ipv4: 172.80.80.32
       exec:
         - ip address add 172.16.80.3/27 dev eth1
-        - ip route add default via 172.16.80.1
+        - ip route add 172.16.0.0/16 via 172.16.80.1
         - ip -6 address add 2001:db8:8000::3/64 dev eth1
         - ip -6 route add default via 2001:db8:8000::1 dev eth1
       group: server
@@ -118,7 +118,7 @@ topology:
       mgmt-ipv4: 172.80.80.33
       exec:
         - ip address add 172.16.80.34/27 dev eth1
-        - ip route add default via 172.16.80.33
+        - ip route add 172.16.0.0/16 via 172.16.80.33
         - ip -6 address add 2001:db8:8032::2/64 dev eth1
         - ip -6 route add default via 2001:db8:8032::1 dev eth1
       group: server
@@ -130,7 +130,7 @@ topology:
       mgmt-ipv4: 172.80.80.34
       exec:
         - ip address add 172.16.84.2/27 dev eth1
-        - ip route add default via 172.16.84.1
+        - ip route add 172.16.0.0/16 via 172.16.84.1
         - ip -6 address add 2001:db8:8400::2/64 dev eth1
         - ip -6 route add default via 2001:db8:8400::1 dev eth1
       group: server
@@ -139,7 +139,7 @@ topology:
       mgmt-ipv4: 172.80.80.35
       exec:
         - ip address add 172.16.84.3/27 dev eth1
-        - ip route add default via 172.16.84.1
+        - ip route add 172.16.0.0/16 via 172.16.84.1
         - ip -6 address add 2001:db8:8400::3/64 dev eth1
         - ip -6 route add default via 2001:db8:8400::1 dev eth1
       group: server
@@ -148,7 +148,7 @@ topology:
       mgmt-ipv4: 172.80.80.36
       exec:
         - ip address add 172.16.84.34/27 dev eth1
-        - ip route add default via 172.16.84.33
+        - ip route add 172.16.0.0/16 via 172.16.84.33
         - ip -6 address add 2001:db8:8432::2/64 dev eth1
         - ip -6 route add default via 2001:db8:8432::1 dev eth1
       group: server
@@ -160,7 +160,7 @@ topology:
       mgmt-ipv4: 172.80.80.37
       exec:
         - ip address add 172.16.86.2/27 dev eth1
-        - ip route add default via 172.16.86.1
+        - ip route add 172.16.0.0/16 via 172.16.86.1
         - ip -6 address add 2001:db8:8600::2/64 dev eth1
         - ip -6 route add default via 2001:db8:8600::1 dev eth1
       group: server
@@ -169,7 +169,7 @@ topology:
       mgmt-ipv4: 172.80.80.38
       exec:
         - ip address add 172.16.86.2/27 dev eth1
-        - ip route add default via 172.16.86.1
+        - ip route add 172.16.0.0/16 via 172.16.86.1
         - ip -6 address add 2001:db8:8600::3/64 dev eth1
         - ip -6 route add default via 2001:db8:8600::1 dev eth1
       group: server
@@ -178,7 +178,7 @@ topology:
       mgmt-ipv4: 172.80.80.39
       exec:
         - ip address add 172.16.86.34/27 dev eth1
-        - ip route add default via 172.16.86.33
+        - ip route add 172.16.0.0/16 via 172.16.86.33
         - ip -6 address add 2001:db8:8632::2/64 dev eth1
         - ip -6 route add default via 2001:db8:8632::1 dev eth1
       group: server
