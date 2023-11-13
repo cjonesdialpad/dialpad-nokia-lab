@@ -16,6 +16,12 @@ Goals of this lab:
 4. Introduce advanced Grafana dashboarding with [FlowChart](https://grafana.com/grafana/plugins/agenty-flowcharting-panel/) plugin rendering port speeds and statuses.
 5. Give a sneak peek of the modern logging telemetry stack with Loki and Promtail to consume Syslog data from SR Linux nodes.
 
+### Access details
+```bash
+# Connect to gcloud instance
+gcloud compute ssh --zone "us-west2-a" "gce-usw-containerlab1"  --project "fststaging"
+```
+
 ## Deploying the lab
 
 The lab is deployed with the [containerlab](https://containerlab.dev) project, where [`st.clab.yml`](st.clab.yml) file declaratively describes the lab topology.
@@ -110,11 +116,6 @@ Using the flowchart plugin and real telemetry data users can create interactive 
 ![pic2](https://gitlab.com/rdodin/pics/-/wikis/uploads/12f154dafca1270f7a1628c1ed3ab77a/image.png)
 
 ### Access details
-```bash
-# Connect to gcloud instance
-gcloud compute ssh --zone "us-west2-a" "gce-usw-containerlab1"  --project "fststaging"
-```
-
 
 Using containerlab's ability to expose ports of the containers to the host, the following services are available on the host machine:
 
