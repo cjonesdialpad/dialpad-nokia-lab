@@ -257,6 +257,8 @@ topology:
     #     - 3100:3100
 
   links:
+    ### Juniper: eth0 = fxp0, eth1 = ge-0/0/0, eth2 = ge-0/0/1 etc.
+
     ### INTER-ROUTER ###
     - endpoints: ["clab-sjc-ebr1:e1-1", "clab-sjc-ebr2:e1-1"]
     - endpoints: ["clab-chi-ebr1:eth1", "clab-chi-ebr2:eth1"]
