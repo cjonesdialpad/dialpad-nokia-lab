@@ -110,6 +110,11 @@ Using the flowchart plugin and real telemetry data users can create interactive 
 ![pic2](https://gitlab.com/rdodin/pics/-/wikis/uploads/12f154dafca1270f7a1628c1ed3ab77a/image.png)
 
 ### Access details
+```bash
+# Connect to gcloud instance
+gcloud compute ssh --zone "us-west2-a" "gce-usw-containerlab1"  --project "fststaging"
+```
+
 
 Using containerlab's ability to expose ports of the containers to the host, the following services are available on the host machine:
 
