@@ -13,7 +13,7 @@ topology:
     vr-nokia_sros:
       image: vrnetlab/vr-sros:23.7.R2
       type: "cp: uuid=5e71b654-1430-4c0e-a7fe-7752466a7a30 cpu=4 ram=5 slot=A chassis=SR-1 card=cpm-1 slot=1 mda/1=me12-100gb-qsfp28"
-      license: ~/assets/SR_OS_VSR_license.txt
+      license: ~/SR_OS_VSR_license.txt
     vr-juniper_vmx:
       image: vrnetlab/vr-vmx:21.4R3.15
     linux:
