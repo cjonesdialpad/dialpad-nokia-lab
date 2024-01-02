@@ -9,7 +9,7 @@ topology:
 
   kinds:
     nokia_srlinux:
-      image: ghcr.io/nokia/srlinux:23.7.2
+      image: ghcr.io/nokia/srlinux
     vr-nokia_sros:
       image: vrnetlab/vr-sros:23.7.R2
       type: "cp: uuid=5e71b654-1430-4c0e-a7fe-7752466a7a30 cpu=4 ram=5 slot=A chassis=SR-1 card=cpm-1 slot=1 mda/1=me12-100gb-qsfp28"
